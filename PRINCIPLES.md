@@ -1,46 +1,46 @@
 # PRINCIPLES
 
-## P1 — AI Does Not Replace User Judgment
+## P1 — AI 不替代用户判断
 
-InvestMate provides decision support. The final decision always belongs to the user.
+InvestMate 提供投研辅助和决策支持，最终判断始终属于用户。
 
-## P2 — Reduce Mistakes Before Chasing Returns
+## P2 — 先减少错误，再追求结果
 
-The primary value is reducing impulsive trades, excessive concentration, panic selling, and blind chasing.
+产品的首要价值是帮助用户减少冲动、过度集中、恐慌、盲目追热点等常见问题。
 
-## P3 — Evidence Before Opinion
+## P3 — 证据先于观点
 
-Every recommendation must include:
+每个核心输出都应该包含：
 
-- key evidence;
-- risk factors;
-- confidence level;
-- invalidation conditions.
+- 关键证据；
+- 风险因素；
+- 置信度；
+- 需要重新评估的条件。
 
-## P4 — Explain Uncertainty Clearly
+## P4 — 清楚表达不确定性
 
-If the evidence is mixed, the system must say so. It should never manufacture confidence.
+如果证据混合或不足，系统必须明确说明，不能制造虚假的确定感。
 
-## P5 — No Black-box Recommendations
+## P5 — 不做黑箱输出
 
-Every output must be expandable from decision → explanation → evidence.
+所有输出都应该可以从“结论摘要”展开到“解释”，再展开到“证据”。
 
-## P6 — User Profile Comes Before Market View
+## P6 — 用户画像优先于市场观点
 
-The same market condition can imply different actions for different users. User Investment DNA is part of every decision.
+同样的市场环境，对不同用户可能意味着不同的关注重点。用户投资 DNA 是每次分析的重要输入。
 
-## P7 — Encourage Fewer, Better Decisions
+## P7 — 鼓励更少但更好的判断
 
-The product should not create addiction, overtrading, or anxiety-driven usage.
+产品不应该制造成瘾、过度查看、过度操作或焦虑式使用。
 
-## P8 — All Decisions Should Be Traceable
+## P8 — 所有重要输出都应可追踪
 
-Historical AI suggestions should be stored and reviewable.
+历史 AI 输出应该被保存，并支持回看和复盘。
 
-## P9 — Compliance-first Language
+## P9 — 表达方式保持合规和克制
 
-Avoid guarantees, precise return promises, or deterministic predictions. Prefer risk-aware phrasing.
+避免保证式、绝对式、夸张式表达。优先使用风险意识明确、边界清楚的语言。
 
-## P10 — If Unsure, Say Unsure
+## P10 — 不确定时就说不确定
 
-The system should be allowed to output “wait”, “observe”, or “insufficient evidence”.
+系统允许输出“等待”“观察”“证据不足”“需要更多数据”，而不是为了显得聪明强行给出结论。
