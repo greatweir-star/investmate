@@ -55,11 +55,13 @@
 - AI 服务：OpenAI API 或兼容接口；
 - 本地运行：Docker Compose。
 
-## 5. 第一批代码任务
+## 5. 可执行任务清单
 
-### 5.1 初始化工程
+### Task 001：整理仓库结构
 
-创建：
+目标：建立标准工程目录。
+
+需要创建：
 
 ```text
 frontend/
@@ -68,13 +70,61 @@ scripts/
 infra/
 ```
 
-并保证可以本地启动。
+验收：
 
-### 5.2 后端 MVP
+- 根目录结构清晰；
+- 不删除已有中文文档；
+- README 中的结构说明与实际目录一致。
 
-实现：
+### Task 002：初始化前端项目
+
+目标：创建 Next.js 前端。
+
+要求：
+
+- 使用 TypeScript；
+- 使用 App Router；
+- 使用中文 UI；
+- 创建基础布局；
+- 创建导航栏。
+
+页面：
+
+- `/`
+- `/assets`
+- `/portfolio`
+- `/history`
+- `/settings`
+
+验收：
+
+- `npm run dev` 可以启动；
+- 所有页面可访问；
+- 页面无英文占位文案。
+
+### Task 003：初始化后端项目
+
+目标：创建 FastAPI 服务。
+
+需要实现：
 
 - `GET /health`
+- CORS 配置；
+- 统一响应结构；
+- 基础错误处理。
+
+验收：
+
+- `uvicorn app.main:app --reload` 可以启动；
+- `/health` 返回成功结果；
+- `/docs` 可以打开。
+
+### Task 004：实现 Mock API
+
+目标：先跑通前后端链路。
+
+需要实现：
+
 - `GET /api/market/status`
 - `GET /api/assets/search`
 - `POST /api/analysis/asset`
@@ -84,67 +134,229 @@ infra/
 - `GET /api/settings`
 - `POST /api/settings`
 
-第一版可以使用 mock 数据，但接口结构必须符合文档。
+验收：
 
-### 5.3 前端 MVP
+- 所有接口返回 `specs/API设计.md` 中定义的结构；
+- 前端可以成功请求；
+- 接口返回中文内容。
 
-实现页面：
+### Task 005：实现首页
 
-- `/` 首页；
-- `/assets` 标的分析；
-- `/portfolio` 持仓分析；
-- `/history` 历史记录；
-- `/settings` 设置。
+目标：完成首页 MVP。
 
-### 5.4 数据库 MVP
+参考文档：
 
-根据 `specs/数据库设计.md` 创建表结构。
+- `prd/页面- 首页.md`
+- `prd/组件-MarketStatusCard.md`
 
-第一批表：
+组件：
 
-- users；
-- user_investment_dna；
-- asset_basic；
-- asset_daily_price；
-- asset_daily_basic；
-- index_daily_price；
-- user_portfolio_position；
-- analysis_record。
+- MarketStatusCard；
+- RiskSummaryCard；
+- QuickAnalyzeBox；
+- RecentHistoryList。
 
-### 5.5 AI 输出 MVP
+验收：
 
-根据 `specs/AI输出结构.md` 生成结构化结果。
+- 首页可展示市场状态；
+- 快速输入可以跳转标的分析页；
+- 空状态有中文提示。
 
-第一版可以先 mock AI 解释，但必须保留结构。
+### Task 006：实现标的分析页
 
-## 6. 验收标准
+目标：完成标的分析 MVP。
 
-完成后应满足：
+参考文档：
 
-1. 本地可以启动前端；
-2. 本地可以启动后端；
-3. 首页可以请求市场状态接口；
-4. 标的分析页可以提交标的并展示结果；
-5. 持仓页可以录入持仓并展示结果；
-6. 历史页可以展示分析记录；
-7. 设置页可以展示配置项；
-8. 所有用户可见文案使用中文。
+- `prd/页面-标的分析.md`
 
-## 7. 开发原则
+组件：
 
-1. 先实现 mock 闭环，再接真实数据。
-2. 先保证接口稳定，再优化 UI。
-3. 先结构化输出，再自然语言解释。
-4. 不擅自扩大功能范围。
-5. 对不确定问题，在 TODO 中记录。
+- AssetSearchInput；
+- AssetBasicInfo；
+- AssetScorePanel；
+- FactorList；
+- ExplanationPanel。
 
-## 8. 建议执行顺序
+验收：
 
-1. 创建后端 FastAPI 项目；
-2. 创建 mock API；
-3. 创建前端页面；
-4. 前后端联调；
-5. 加入数据库；
-6. 接入 Tushare；
-7. 接入 AI 服务；
-8. 完成历史记录。
+- 可以输入标的；
+- 可以调用分析接口；
+- 可以展示评分、关键因素、风险因素、中文解释。
+
+### Task 007：实现持仓分析页
+
+目标：完成持仓录入和组合结构分析。
+
+参考文档：
+
+- `prd/页面-持仓分析.md`
+
+组件：
+
+- PositionEditor；
+- PortfolioSummaryCard；
+- PortfolioRiskPanel；
+- ExposureBreakdown。
+
+验收：
+
+- 可以录入多条持仓；
+- 可以保存持仓；
+- 可以调用持仓分析接口；
+- 可以展示组合摘要。
+
+### Task 008：实现历史记录页
+
+目标：完成历史列表和详情展示。
+
+参考文档：
+
+- `prd/页面-历史记录.md`
+
+验收：
+
+- 可以展示历史记录；
+- 可以查看详情；
+- 空状态有中文提示。
+
+### Task 009：实现设置页
+
+目标：完成基础设置和用户投资 DNA 表单。
+
+参考文档：
+
+- `prd/页面-设置.md`
+
+验收：
+
+- 可以展示配置状态；
+- 可以保存用户投资 DNA；
+- 不明文展示敏感字段。
+
+### Task 010：创建数据库 Schema
+
+目标：根据 `specs/数据库设计.md` 创建 PostgreSQL 表结构。
+
+要求：
+
+- 使用 SQLAlchemy migration 或 SQL 脚本均可；
+- 保留 demo 用户；
+- 支持 analysis_record 写入。
+
+验收：
+
+- 本地数据库可创建所有 MVP 表；
+- 后端可以读写 analysis_record；
+- 后端可以读写 user_portfolio_position。
+
+### Task 011：接入数据同步 Mock
+
+目标：实现数据同步状态接口。
+
+参考文档：
+
+- `specs/数据同步设计.md`
+
+验收：
+
+- 设置页可看到同步状态；
+- 后端有 sync status mock；
+- 后续可替换为 Tushare 实现。
+
+### Task 012：接入真实 Tushare
+
+目标：将 mock 数据源逐步替换为 Tushare。
+
+优先级：
+
+1. asset_basic；
+2. index_daily_price；
+3. asset_daily_price；
+4. asset_daily_basic。
+
+验收：
+
+- 可以配置 Tushare Token；
+- 可以同步基础标的；
+- 可以同步至少一个交易日的数据；
+- 同步日志可查询。
+
+### Task 013：接入 AI 解释服务
+
+目标：根据结构化分析结果生成中文解释。
+
+要求：
+
+- 第一版可以保留 mock；
+- 接口结构必须预留真实模型调用；
+- Prompt 版本需要记录。
+
+参考文档：
+
+- `prompts/市场分析Agent.md`
+- `prompts/决策Agent.md`
+- `prompts/持仓分析Agent.md`
+- `prompts/复盘Agent.md`
+
+验收：
+
+- AI 输出符合 `specs/AI输出结构.md`；
+- 中文解释基于结构化结果；
+- 历史记录保存 prompt_version 和 model_version。
+
+## 6. 执行顺序
+
+严格按照以下顺序开发：
+
+```text
+Task 001
+  ↓
+Task 002 + Task 003
+  ↓
+Task 004
+  ↓
+Task 005
+  ↓
+Task 006
+  ↓
+Task 007
+  ↓
+Task 008
+  ↓
+Task 009
+  ↓
+Task 010
+  ↓
+Task 011
+  ↓
+Task 012
+  ↓
+Task 013
+```
+
+## 7. 完成定义
+
+第一阶段完成后，应该可以做到：
+
+1. 本地启动前端；
+2. 本地启动后端；
+3. 首页展示市场状态；
+4. 标的分析页展示 mock 分析；
+5. 持仓页展示 mock 组合分析；
+6. 历史页展示历史记录；
+7. 设置页展示配置状态；
+8. 数据库可以保存分析记录；
+9. 所有用户可见文案为中文。
+
+## 8. 重要约束
+
+如果文档和实现冲突，以以下优先级为准：
+
+1. `产品原则.md`
+2. `REPOSITORY_SPEC.md`
+3. `docs/MVP产品设计.md`
+4. `specs/API设计.md`
+5. `specs/数据库设计.md`
+
+不要因为实现方便而改变产品边界。
