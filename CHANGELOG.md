@@ -2,6 +2,14 @@
 
 ## 0.1.0
 
-- Initialized InvestMate project.
-- Defined product positioning as AI Investment Copilot.
-- Added product vision, principles, roadmap, MVP PRD, decision engine, data engine, agents, API, database, prompts and Codex bootstrap task.
+- 初始化 InvestMate 项目。
+- 明确产品定位：AI 投资副驾驶。
+- 新增中文项目愿景、产品原则、开发路线图。
+- 新增 Repository Spec。
+- 新增产品蓝图、MVP 产品设计、用户投资 DNA、决策引擎、数据体系、AI 智能体设计。
+- 新增 API 设计和数据库设计。
+- 新增第一阶段开发计划。
+
+## 说明
+
+从 0.1.0 开始，项目文档默认使用中文。代码、API、数据库字段仍使用英文。
