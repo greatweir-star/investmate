@@ -1,55 +1,67 @@
 # ROADMAP
 
-## Phase 0 — Repository and Spec Setup
+## Phase 0 — 仓库与规格初始化
 
-- Create product docs
-- Define MVP PRD
-- Define Decision Engine
-- Define API and database contracts
-- Prepare Codex development tasks
+目标：建立可交给 Codex 开发的中文产品仓库。
 
-## Phase 1 — Local MVP
+任务：
 
-Goal: produce a usable local web app.
+- 创建产品文档；
+- 定义 MVP 产品范围；
+- 定义决策引擎；
+- 定义 API 和数据库规格；
+- 准备 Codex 开发任务。
 
-Features:
+## Phase 1 — 本地 MVP
 
-- Investment DNA onboarding
-- Daily Decision dashboard
-- Second Opinion input
-- Portfolio upload/manual entry
-- Structured AI output
-- Decision history storage
+目标：做出一个可本地运行的 Web 产品。
 
-## Phase 2 — Tushare Data Integration
+功能：
 
-Features:
+- 用户投资 DNA 初始化；
+- 市场状态首页；
+- 标的分析输入；
+- 持仓手动录入；
+- 结构化 AI 输出；
+- 历史记录保存。
 
-- Pull A-share daily data
-- Index trend signals
-- Basic market temperature
-- Asset-level trend and risk signals
-- Data freshness checks
+## Phase 2 — Tushare 数据接入
 
-## Phase 3 — Closed Beta
+功能：
 
-Features:
+- 拉取 A 股日线数据；
+- 拉取指数数据；
+- 计算基础市场状态；
+- 计算标的级趋势和风险信号；
+- 检查数据新鲜度。
 
-- User accounts
-- Portfolio persistence
-- Daily push summary
-- Feedback collection
-- Decision usefulness scoring
+## Phase 3 — 小范围内测
 
-## Phase 4 — Paid Validation
+功能：
 
-Features:
+- 用户账号；
+- 持仓持久化；
+- 每日摘要；
+- 用户反馈收集；
+- 输出有用性评分。
 
-- Paid personal portfolio review
-- Pro-level decision history
-- Weekly review report
-- Watchlist monitoring
+## Phase 4 — 付费验证
 
-## Phase 5 — Multi-asset Expansion
+功能：
 
-Support ETFs, funds, Hong Kong stocks, US stocks, bonds, commodities and crypto if legally appropriate.
+- 个人持仓分析；
+- 高级历史记录；
+- 周度复盘报告；
+- 关注列表跟踪。
+
+## Phase 5 — 多资产扩展
+
+在合规和数据许可允许的情况下，逐步支持：
+
+- ETF；
+- 基金；
+- 港股；
+- 美股；
+- 债券；
+- 商品；
+- 其他合规资产。
