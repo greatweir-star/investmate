@@ -16,17 +16,20 @@
 2. `REPOSITORY_SPEC.md`
 3. `项目愿景.md`
 4. `产品原则.md`
-5. `docs/MVP产品设计.md`
-6. `docs/信息架构.md`
-7. `docs/页面设计.md`
-8. `docs/用户流程.md`
-9. `docs/决策引擎.md`
-10. `specs/API设计.md`
-11. `specs/数据库设计.md`
-12. `specs/AI输出结构.md`
-13. `specs/前端架构.md`
-14. `specs/后端架构.md`
-15. `specs/数据同步设计.md`
+5. `docs/产品规划完成度总览.md`
+6. `docs/MVP产品设计.md`
+7. `docs/信息架构.md`
+8. `docs/页面设计.md`
+9. `docs/用户流程.md`
+10. `docs/前端组件清单.md`
+11. `docs/接口清单.md`
+12. `specs/API设计.md`
+13. `specs/数据库设计.md`
+14. `specs/AI输出结构.md`
+15. `specs/前端架构.md`
+16. `specs/后端架构.md`
+17. `specs/数据同步设计.md`
+18. `docs/开发验收总清单.md`
 
 ## 3. 第一阶段开发边界
 
@@ -136,7 +139,7 @@ infra/
 
 验收：
 
-- 所有接口返回 `specs/API设计.md` 中定义的结构；
+- 所有接口返回 `specs/API设计.md` 和 `docs/接口清单.md` 中定义的结构；
 - 前端可以成功请求；
 - 接口返回中文内容。
 
@@ -148,13 +151,14 @@ infra/
 
 - `prd/页面- 首页.md`
 - `prd/组件-MarketStatusCard.md`
+- `docs/前端组件清单.md`
 
 组件：
 
 - MarketStatusCard；
-- RiskSummaryCard；
 - QuickAnalyzeBox；
-- RecentHistoryList。
+- RecentHistoryList；
+- 因素列表。
 
 验收：
 
@@ -169,11 +173,14 @@ infra/
 参考文档：
 
 - `prd/页面-标的分析.md`
+- `docs/组件标的搜索.md`
+- `docs/组件评分面板.md`
+- `docs/组件因素列表.md`
+- `docs/组件解释面板.md`
 
 组件：
 
 - AssetSearchInput；
-- AssetBasicInfo；
 - AssetScorePanel；
 - FactorList；
 - ExplanationPanel。
@@ -182,7 +189,7 @@ infra/
 
 - 可以输入标的；
 - 可以调用分析接口；
-- 可以展示评分、关键因素、风险因素、中文解释。
+- 可以展示评分、关键因素、关注因素、中文解释。
 
 ### Task 007：实现持仓分析页
 
@@ -191,13 +198,15 @@ infra/
 参考文档：
 
 - `prd/页面-持仓分析.md`
+- `docs/组件持仓编辑.md`
+- `docs/组件组合概览.md`
 
 组件：
 
 - PositionEditor；
-- PortfolioSummaryCard；
-- PortfolioRiskPanel；
-- ExposureBreakdown。
+- PortfolioPanel；
+- FactorList；
+- ExplanationPanel。
 
 验收：
 
@@ -213,6 +222,7 @@ infra/
 参考文档：
 
 - `prd/页面-历史记录.md`
+- `docs/组件历史表格.md`
 
 验收：
 
@@ -227,6 +237,7 @@ infra/
 参考文档：
 
 - `prd/页面-设置.md`
+- `docs/组件偏好表单.md`
 
 验收：
 
@@ -347,7 +358,8 @@ Task 013
 6. 历史页展示历史记录；
 7. 设置页展示配置状态；
 8. 数据库可以保存分析记录；
-9. 所有用户可见文案为中文。
+9. 所有用户可见文案为中文；
+10. 通过 `docs/开发验收总清单.md`。
 
 ## 8. 重要约束
 
@@ -355,8 +367,9 @@ Task 013
 
 1. `产品原则.md`
 2. `REPOSITORY_SPEC.md`
-3. `docs/MVP产品设计.md`
-4. `specs/API设计.md`
-5. `specs/数据库设计.md`
+3. `docs/产品规划完成度总览.md`
+4. `docs/MVP产品设计.md`
+5. `specs/API设计.md`
+6. `specs/数据库设计.md`
 
 不要因为实现方便而改变产品边界。
