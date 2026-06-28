@@ -1,31 +1,37 @@
 # VISION
 
-## Mission
+## 使命
 
-Help individual investors make better investment decisions by providing a transparent, evidence-based AI second opinion before they trade.
+InvestMate 的使命是：帮助个人投资者在重要投资判断前，获得一个透明、结构化、可复盘的 AI 第二意见。
 
-## What We Are Building
+## 我们正在构建什么
 
-InvestMate is not an AI stock picker, not an auto-trading bot, and not a financial media product. It is a personal investment decision support system.
+InvestMate 不是 AI 选股器，不是自动化交易机器人，也不是财经媒体产品。
 
-The first product experience should answer:
+它是一个个人投研辅助系统，帮助用户在面对市场信息、持仓结构和风险因素时，更清楚地理解自己正在做什么。
 
-> Should I act, wait, reduce risk, or review my assumptions?
+第一阶段产品体验应该回答：
 
-## Core Belief
+> 我现在是否需要行动、等待、降低风险，或者重新检查自己的假设？
 
-Most investors do not fail because they lack information. They fail because they make decisions under anxiety, noise, overconfidence, fear, or FOMO.
+## 核心信念
 
-InvestMate exists to reduce bad decisions, not to promise extraordinary returns.
+大多数投资者并不是因为缺少信息而犯错，而是因为在焦虑、噪音、过度自信、恐惧或追热点情绪下做判断。
 
-## Product Category
+InvestMate 存在的意义，是帮助用户减少错误判断，而不是承诺超额结果。
 
-Investment Copilot / Decision Support AI.
+## 产品类别
 
-The long-term product can evolve into an AI CIO, but the first-stage public positioning must remain modest and trustworthy:
+InvestMate 属于：
 
-> AI-assisted investment decision support.
+> AI 投资副驾驶 / 投研辅助 AI / 投资决策支持工具。
 
-## North Star
+长期来看，它可以逐步演进为更完整的 AI 投资操作系统。但第一阶段的公开定位必须保持克制、可信和合规：
 
-The product succeeds when users repeatedly consult InvestMate before important investment actions and feel that it improves decision clarity.
+> AI 辅助投研与投资判断支持。
+
+## 北极星指标
+
+产品成功的标志不是用户看了多少内容，而是：
+
+> 用户是否愿意在重要投资判断前反复使用 InvestMate，并认为它提高了自己的判断清晰度。
