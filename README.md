@@ -1,59 +1,76 @@
 # InvestMate
 
-> AI Investment Copilot — every investment decision deserves a second opinion.
+> AI 投资副驾驶：每一次投资判断，都值得一个 AI 第二意见。
 
-InvestMate is an AI-native investment decision support system. It does **not** replace investors, does **not** promise returns, and does **not** execute trades. Its first-stage mission is to help individual investors make clearer, calmer, evidence-based investment decisions.
+InvestMate 是一个面向个人投资者的 AI 投研辅助系统。它帮助用户整理市场数据、理解标的状态、识别持仓风险，并形成更清晰的个人判断。
 
-## Product Positioning
+## 一句话定位
 
-InvestMate is positioned as an **AI Investment Copilot**:
+**帮助普通投资者做出更清晰、更克制、更有证据支持的投资判断。**
 
-- It helps users think before they trade.
-- It provides transparent second opinions.
-- It evaluates decisions against market conditions, portfolio risk, and the user's Investment DNA.
-- It reduces impulsive trading, over-concentration, and decision anxiety.
+## 核心理念
 
-The core product question is:
+普通投资者真正缺少的往往不是信息，而是把信息转化为稳定判断的流程。
 
-> Before I buy, sell, add, reduce, or hold — what should I consider?
+InvestMate 不追求制造更多观点，而是帮助用户在研究市场、查看持仓、评估风险和复盘历史时，多一个冷静、结构化、可解释的 AI 视角。
 
-## First Principle
+## 产品边界
 
-InvestMate does not make decisions for users. It provides transparent, verifiable, risk-aware decision support. The final decision always belongs to the user.
+第一阶段只做投研辅助，不做：
 
-## MVP Scope
+- 自动化交易；
+- 账户托管；
+- 收益承诺；
+- 高频行情；
+- 券商接口；
+- 盘中即时指令。
 
-The first version focuses on four user jobs:
+## MVP 核心功能
 
-1. **Daily Decision** — What is today's market state and suggested exposure range?
-2. **Second Opinion** — Should I buy/sell/hold a specific asset?
-3. **Portfolio Review** — Is my current portfolio balanced and aligned with my risk profile?
-4. **Decision History** — What did the AI suggest before, and what happened afterward?
+第一版验证四个能力：
 
-## Repository Structure
+1. **市场状态**：整理当前市场环境和主要风险因素。
+2. **标的分析**：输入股票、ETF 或指数，获得结构化分析。
+3. **持仓分析**：手动录入持仓，识别组合结构问题。
+4. **历史复盘**：保存系统输出，支持后续回看和验证。
+
+## 第一阶段数据源
+
+第一阶段默认使用 Tushare 数据，适合做 A 股中低频投研辅助：
+
+- 股票基础信息；
+- 日线行情；
+- 指数行情；
+- ETF 行情；
+- 每日基本面；
+- 财务指标；
+- 行业分类；
+- 交易日历。
+
+## 仓库结构
 
 ```text
 investmate/
 ├── README.md
-├── VISION.md
-├── PRINCIPLES.md
-├── ROADMAP.md
-├── CHANGELOG.md
+├── 项目愿景.md
+├── 产品原则.md
+├── 开发路线图.md
+├── 更新日志.md
+├── REPOSITORY_SPEC.md
 ├── docs/
 ├── specs/
 ├── prompts/
 └── tasks/
 ```
 
-## Suggested Tech Direction
+## 开发原则
 
-- Frontend: Next.js / React
-- Backend: FastAPI or Next.js API routes
-- Database: PostgreSQL
-- Data Source: Tushare Pro first
-- AI Layer: LLM orchestration with structured prompts and JSON outputs
-- Deployment: Vercel + managed Postgres, or Docker-based single-server deployment
+1. 文档使用中文，代码、API、数据库字段使用英文。
+2. 先做核心分析闭环，再做复杂界面。
+3. 所有输出先结构化，再生成中文解释。
+4. 所有重要输出都要保存，便于复盘。
+5. 任何功能都必须服务于“帮助用户形成更好的投资判断”。
 
-## Disclaimer
+## 免责声明
 
-InvestMate is an investment decision support and educational analysis tool. It is not a licensed investment advisor, broker, asset manager, or trading system. Any output should be treated as informational support, not financial advice or guaranteed recommendation.
+InvestMate 是投研辅助和信息分析工具，不是证券投资顾问、经纪商、资产管理人或交易系统。系统输出仅用于辅助研究和个人判断，不构成任何形式的收益承诺或交易指令。
