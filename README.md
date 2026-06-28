@@ -60,7 +60,10 @@ investmate/
 ├── docs/
 ├── specs/
 ├── prompts/
-└── tasks/
+├── tasks/
+├── prd/
+├── frontend/
+└── backend/
 ```
 
 ## 开发原则
@@ -70,6 +73,112 @@ investmate/
 3. 所有输出先结构化，再生成中文解释。
 4. 所有重要输出都要保存，便于复盘。
 5. 任何功能都必须服务于“帮助用户形成更好的投资判断”。
+
+## 本地启动说明
+
+> 当前仓库已经完成产品规格和部分工程骨架。Codex 应先阅读 `tasks/Codex开发指南.md`，再补齐可运行代码。
+
+### 1. 克隆仓库
+
+```bash
+git clone https://github.com/greatweir-star/investmate.git
+cd investmate
+```
+
+### 2. 推荐开发环境
+
+- Node.js 20+
+- Python 3.11+
+- PostgreSQL 15+
+- npm 或 pnpm
+
+### 3. 前端启动方式
+
+当前计划使用 Next.js。
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+默认访问：
+
+```text
+http://localhost:3000
+```
+
+### 4. 后端启动方式
+
+当前计划使用 FastAPI。
+
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+默认访问：
+
+```text
+http://localhost:8000/docs
+```
+
+### 5. 环境变量
+
+建议创建 `.env` 或 `.env.local`。
+
+必要配置：
+
+```text
+DATABASE_URL=postgresql://user:password@localhost:5432/investmate
+TUSHARE_TOKEN=你的 Tushare Token
+OPENAI_API_KEY=你的模型服务 Key
+OPENAI_MODEL=gpt-4o-mini
+```
+
+### 6. 数据库初始化
+
+根据 `specs/数据库设计.md` 中的 SQL 创建 PostgreSQL 表。
+
+第一阶段至少需要：
+
+- users；
+- user_investment_dna；
+- asset_basic；
+- user_portfolio_position；
+- analysis_record。
+
+### 7. Codex 开发入口
+
+Codex 应从以下文件开始：
+
+```text
+tasks/Codex开发指南.md
+```
+
+执行顺序：
+
+1. 初始化工程目录；
+2. 创建前端页面；
+3. 创建后端 mock API；
+4. 前后端联调；
+5. 创建数据库表；
+6. 接入数据同步；
+7. 接入 AI 解释服务。
+
+### 8. MVP 验收目标
+
+第一阶段完成后，应支持：
+
+1. 首页展示市场状态；
+2. 标的分析页展示结构化分析；
+3. 持仓页展示组合分析；
+4. 历史页展示分析记录；
+5. 设置页展示配置状态；
+6. 所有用户可见文案为中文。
 
 ## 免责声明
 
