@@ -4,7 +4,7 @@
 
 你是 InvestMate 项目的 AI 全栈开发工程师。
 
-你的任务是根据仓库中的中文规格文档，实现第一阶段 Web MVP。
+你的任务是根据仓库中的中文规格文档，实现第一阶段 Web MVP，并为后续 AI Native 版本预留工程结构。
 
 不要自由扩展产品范围，优先完成可运行、可演示、可迭代的版本。
 
@@ -52,7 +52,155 @@ AI 持仓体检报告
 16. `specs/AI输出结构.md`
 17. `docs/开发验收总清单.md`
 
-## 4. 第一阶段开发边界
+## 4. AI Native 必读文档
+
+以下 7 份文档必须阅读，并在后端架构中预留对应能力。
+
+1. `docs/AI原生产品原则.md`
+2. `docs/AI工作流设计.md`
+3. `docs/Agent编排架构.md`
+4. `docs/用户记忆系统.md`
+5. `docs/主动复盘机制.md`
+6. `docs/解释可追溯设计.md`
+7. `docs/AI输出质量评估.md`
+
+这些文档决定 InvestMate 不是普通 SaaS 加 AI 文案，而是围绕 AI 工作流、Agent 编排、用户记忆、主动复盘、解释可追溯和质量评估构建的 AI Native 产品。
+
+## 5. 后端必须预留的 AI Native 模块
+
+即使 MVP 第一版先使用 mock，也必须在后端目录和服务层中预留以下模块，避免后续重构成本过高。
+
+### 5.1 agent_orchestrator
+
+用途：统一编排数据整理、持仓分析、报告解释、边界检查、复盘和反馈归类等 Agent。
+
+建议职责：
+
+- 统一接收 report generation request；
+- 调用结构化计算服务；
+- 调用不同 Agent；
+- 合并 Agent 输出；
+- 处理失败和降级；
+- 记录 prompt_version 和 model_version。
+
+建议目录：
+
+```text
+backend/app/services/agent_orchestrator.py
+backend/app/agents/
+```
+
+### 5.2 user_memory
+
+用途：管理用户长期上下文，让历史报告、用户反馈、投资 DNA 和解释偏好进入后续复盘。
+
+建议职责：
+
+- 读取用户投资 DNA；
+- 读取历史报告；
+- 读取用户反馈；
+- 维护历史关注事项；
+- 为周度复盘提供上下文。
+
+建议目录：
+
+```text
+backend/app/services/user_memory.py
+```
+
+### 5.3 report_quality_check
+
+用途：检查 AI 输出是否完整、可解释、符合边界。
+
+建议职责：
+
+- 检查必填字段；
+- 检查 data_date；
+- 检查 evidence；
+- 检查 explanation 是否为空；
+- 检查输出是否脱离结构化结果；
+- 生成 quality_status。
+
+建议目录：
+
+```text
+backend/app/services/report_quality_check.py
+```
+
+### 5.4 weekly_review
+
+用途：支持主动复盘和周度复盘。
+
+建议职责：
+
+- 读取最近一次报告；
+- 读取当前持仓；
+- 对比结构变化；
+- 延续历史关注事项；
+- 生成 weekly review report；
+- 保存到历史记录。
+
+建议目录：
+
+```text
+backend/app/services/weekly_review.py
+```
+
+### 5.5 evidence_trace
+
+用途：让每个重要结论都可以追溯到输入、数据、规则计算和结构化字段。
+
+建议职责：
+
+- 保存 score calculation evidence；
+- 保存 exposure calculation evidence；
+- 保存 watch item evidence；
+- 支持前端展开“为什么这么说”；
+- 支持历史报告回看当时依据。
+
+建议目录：
+
+```text
+backend/app/services/evidence_trace.py
+```
+
+### 5.6 boundary_guard
+
+用途：统一检查用户可见输出是否符合产品边界。
+
+建议职责：
+
+- 检查绝对化表达；
+- 检查是否缺少数据日期；
+- 检查是否缺少依据；
+- 检查是否过度引导用户；
+- 输出 boundary_check_result。
+
+建议目录：
+
+```text
+backend/app/services/boundary_guard.py
+```
+
+### 5.7 feedback_learning
+
+用途：把用户反馈转化为产品和 AI 迭代依据。
+
+建议职责：
+
+- 接收用户反馈；
+- 归类反馈类型；
+- 标记关联模块；
+- 生成用户反馈摘要；
+- 为质量评估和 Prompt 迭代提供依据。
+
+建议目录：
+
+```text
+backend/app/services/feedback_learning.py
+```
+
+## 6. 第一阶段开发边界
 
 只实现投研辅助 MVP。
 
@@ -66,7 +214,7 @@ AI 持仓体检报告
 - 移动 App；
 - 复杂权限系统。
 
-## 5. 推荐技术栈
+## 7. 推荐技术栈
 
 如果没有额外指令，使用：
 
@@ -79,7 +227,53 @@ AI 持仓体检报告
 - AI 服务：OpenAI API 或兼容接口；
 - 本地运行：Docker Compose。
 
-## 6. 可执行任务清单
+## 8. 后端工程结构建议
+
+建议后端至少预留以下结构：
+
+```text
+backend/
+└── app/
+    ├── main.py
+    ├── config.py
+    ├── routers/
+    │   ├── health.py
+    │   ├── portfolio.py
+    │   ├── reports.py
+    │   ├── history.py
+    │   ├── feedback.py
+    │   └── settings.py
+    ├── services/
+    │   ├── portfolio_service.py
+    │   ├── report_service.py
+    │   ├── scoring_service.py
+    │   ├── agent_orchestrator.py
+    │   ├── user_memory.py
+    │   ├── report_quality_check.py
+    │   ├── weekly_review.py
+    │   ├── evidence_trace.py
+    │   ├── boundary_guard.py
+    │   └── feedback_learning.py
+    ├── agents/
+    │   ├── data_prepare_agent.py
+    │   ├── portfolio_analysis_agent.py
+    │   ├── report_explanation_agent.py
+    │   ├── boundary_check_agent.py
+    │   ├── review_agent.py
+    │   └── feedback_agent.py
+    ├── models/
+    │   ├── schemas.py
+    │   └── database.py
+    └── repositories/
+        ├── report_repository.py
+        ├── portfolio_repository.py
+        ├── memory_repository.py
+        └── feedback_repository.py
+```
+
+MVP 阶段这些模块可以先返回 mock 或最小实现，但文件和接口边界要预留。
+
+## 9. 可执行任务清单
 
 ### Task 001：整理仓库结构
 
@@ -136,13 +330,15 @@ infra/
 - `GET /health`
 - CORS 配置；
 - 统一响应结构；
-- 基础错误处理。
+- 基础错误处理；
+- 预留 AI Native services 目录。
 
 验收：
 
 - `uvicorn app.main:app --reload` 可以启动；
 - `/health` 返回成功结果；
-- `/docs` 可以打开。
+- `/docs` 可以打开；
+- `services/` 和 `agents/` 目录存在。
 
 ### Task 004：实现 Mock API
 
@@ -200,6 +396,8 @@ infra/
 - `docs/报告评分规则.md`
 - `docs/报告字段规格.md`
 - `docs/信任体系设计.md`
+- `docs/解释可追溯设计.md`
+- `docs/AI输出质量评估.md`
 
 组件：
 
@@ -221,6 +419,7 @@ infra/
 - 可以展示关注事项；
 - 可以展示中文解释；
 - 可以展示数据日期和生成时间；
+- 可以展示 evidence；
 - 可以提交反馈。
 
 ### Task 007：实现报告保存和历史回看
@@ -231,6 +430,7 @@ infra/
 
 - `prd/页面-历史记录.md`
 - `docs/组件历史表格.md`
+- `docs/用户记忆系统.md`
 - `docs/用户验证记录模板.md`
 
 验收：
@@ -238,6 +438,7 @@ infra/
 - 报告生成后自动保存；
 - 历史列表可以展示报告；
 - 历史详情可以展示完整报告；
+- 历史详情可以展示当时输入和数据日期；
 - 空状态有中文提示。
 
 ### Task 008：实现首页
@@ -264,7 +465,24 @@ infra/
 - 可以查看示例报告；
 - 可以查看最近记录。
 
-### Task 009：实现标的分析页
+### Task 009：实现周度复盘入口
+
+目标：为后续主动复盘预留产品和后端能力。
+
+参考文档：
+
+- `docs/周度复盘PRD.md`
+- `docs/主动复盘机制.md`
+- `docs/AI工作流设计.md`
+
+验收：
+
+- 报告详情页有“生成复盘”入口；
+- 后端存在 weekly_review service；
+- MVP 可基于最近报告生成 mock 复盘；
+- 复盘结果可以保存到历史记录。
+
+### Task 010：实现标的分析页
 
 目标：作为辅助功能，不高于持仓体检主线。
 
@@ -282,7 +500,7 @@ infra/
 - 可以调用分析接口；
 - 可以展示评分、因素和中文解释。
 
-### Task 010：实现设置页
+### Task 011：实现设置页
 
 目标：完成基础设置和用户投资 DNA 表单。
 
@@ -290,16 +508,18 @@ infra/
 
 - `prd/页面-设置.md`
 - `docs/组件偏好表单.md`
+- `docs/用户记忆系统.md`
 
 验收：
 
 - 可以展示配置状态；
 - 可以保存用户投资 DNA；
-- 不明文展示敏感字段。
+- 不明文展示敏感字段；
+- 为解释偏好和复盘偏好预留字段。
 
-### Task 011：创建数据库 Schema
+### Task 012：创建数据库 Schema
 
-目标：根据 `specs/数据库设计.md` 创建 PostgreSQL 表结构。
+目标：根据 `specs/数据库设计.md` 创建 PostgreSQL 表结构，并为 AI Native 能力预留字段。
 
 要求：
 
@@ -307,28 +527,18 @@ infra/
 - 支持持仓；
 - 支持报告；
 - 支持历史记录；
-- 支持反馈。
+- 支持反馈；
+- 支持 evidence；
+- 支持 prompt_version 和 model_version；
+- 支持 quality_status。
 
 验收：
 
 - 本地数据库可创建所有 MVP 表；
 - 后端可以读写持仓；
 - 后端可以保存报告；
-- 后端可以读取历史。
-
-### Task 012：接入数据同步 Mock
-
-目标：实现数据同步状态接口。
-
-参考文档：
-
-- `specs/数据同步设计.md`
-
-验收：
-
-- 设置页可看到同步状态；
-- 后端有 sync status mock；
-- 后续可替换为 Tushare 实现。
+- 后端可以读取历史；
+- 报告记录中可以保存 evidence 和 quality_status。
 
 ### Task 013：接入 AI 解释服务
 
@@ -338,21 +548,28 @@ infra/
 
 - 第一版可以保留 mock；
 - 先规则计算结构化结果，再生成中文解释；
-- Prompt 版本需要记录。
+- Prompt 版本需要记录；
+- 模型版本需要记录；
+- AI 输出需要经过 boundary_guard 和 report_quality_check。
 
 参考文档：
 
 - `prompts/持仓分析Agent.md`
 - `prompts/复盘Agent.md`
+- `docs/Agent编排架构.md`
 - `docs/报告字段规格.md`
+- `docs/解释可追溯设计.md`
+- `docs/AI输出质量评估.md`
 
 验收：
 
 - AI 输出符合报告字段；
 - 中文解释基于结构化结果；
-- 历史记录保存 prompt_version 和 model_version。
+- 历史记录保存 prompt_version 和 model_version；
+- 输出经过质量检查；
+- 输出经过边界检查。
 
-## 7. 执行顺序
+## 10. 执行顺序
 
 严格按照以下顺序开发：
 
@@ -382,7 +599,7 @@ Task 012
 Task 013
 ```
 
-## 8. 完成定义
+## 11. 完成定义
 
 第一阶段完成后，应该可以做到：
 
@@ -394,20 +611,26 @@ Task 013
 6. 报告保存到历史记录；
 7. 用户可以回看历史报告；
 8. 用户可以提交反馈；
-9. 设置页展示配置状态；
-10. 所有用户可见文案为中文；
-11. 通过 `docs/开发验收总清单.md`。
+9. 用户可以手动生成周度复盘 mock；
+10. 设置页展示配置状态；
+11. 后端预留 AI Native 服务模块；
+12. 所有用户可见文案为中文；
+13. 通过 `docs/开发验收总清单.md`。
 
-## 9. 重要约束
+## 12. 重要约束
 
 如果文档和实现冲突，以以下优先级为准：
 
 1. `产品原则.md`
 2. `REPOSITORY_SPEC.md`
-3. `docs/核心商业闭环开发路线.md`
-4. `docs/AI持仓体检报告PRD.md`
-5. `docs/报告页设计.md`
-6. `specs/API设计.md`
-7. `specs/数据库设计.md`
+3. `docs/AI原生产品原则.md`
+4. `docs/核心商业闭环开发路线.md`
+5. `docs/AI持仓体检报告PRD.md`
+6. `docs/AI工作流设计.md`
+7. `docs/Agent编排架构.md`
+8. `docs/报告页设计.md`
+9. `docs/报告字段规格.md`
+10. `specs/API设计.md`
+11. `specs/数据库设计.md`
 
-不要因为实现方便而改变产品边界。
+不要因为实现方便而改变产品边界，不要把 AI Native 设计退化成普通 SaaS 表单和报表。
