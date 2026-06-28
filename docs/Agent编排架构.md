@@ -16,128 +16,111 @@ Agent 不是聊天机器人，而是产品工作流中的任务单元。
 2. 持仓分析 Agent；
 3. 报告解释 Agent；
 4. 边界检查 Agent；
-5. 复盘 Agent。
+5. 复盘 Agent；
+6. 反馈归类 Agent。
 
-## 3. 数据整理 Agent
+## 3. 编排原则
 
-### 职责
+### 3.1 规则优先，AI 补充
 
-把用户输入的持仓补充成可分析对象。
+能用规则计算的部分先用规则计算。
 
-### 输入
+AI 主要负责解释、组织语言、生成用户可理解的说明。
 
-- positions；
-- asset_basic；
-- data_date。
+### 3.2 单一职责
 
-### 输出
+每个 Agent 只做一类任务，避免一个大模型调用承担所有工作。
 
-- enriched_positions；
-- missing_fields；
-- data_quality_notes。
+### 3.3 输出结构稳定
 
-### 边界
+Agent 输出必须可以映射到固定字段，不能只返回长文本。
 
-不生成解释，不判断好坏，只整理数据。
+### 3.4 可降级
 
-## 4. 持仓分析 Agent
+如果某个 Agent 失败，系统应尽量保留已完成的结构化结果。
 
-### 职责
+## 4. Agent 角色定义
 
-基于 enriched_positions 生成结构化分析结果。
+### 4.1 数据整理 Agent
 
-### 输入
+职责：
 
-- enriched_positions；
-- user_investment_dna；
-- report_rules。
+- 校验用户输入；
+- 补全 asset_type、industry、style；
+- 标记数据完整度；
+- 输出 PositionEnriched。
 
-### 输出
+输入：PositionInput。
 
-- health_score；
-- score_items；
-- exposure_items；
-- watch_items；
-- assumptions。
+输出：PositionEnriched[]。
 
-### 边界
+### 4.2 持仓分析 Agent
 
-优先使用规则和计算结果，不直接输出最终结论。
+职责：
 
-## 5. 报告解释 Agent
+- 读取补全后的持仓；
+- 计算分散度；
+- 计算分布；
+- 生成 ScoreItem 和 ExposureItem。
 
-### 职责
+输入：PositionEnriched[]、user_investment_dna。
 
-把结构化结果转化为用户可理解的中文解释。
+输出：score_items、exposure_items、watch_items。
 
-### 输入
+### 4.3 报告解释 Agent
 
-- structured_report；
-- user_investment_dna；
-- explanation_style；
-- output_constraints。
+职责：
 
-### 输出
+- 基于结构化结果生成中文解释；
+- 输出 short_summary 和 detailed_explanation；
+- 说明 assumptions 和 data_notes。
 
-- short_summary；
-- detailed_explanation；
-- next_review_focus；
-- data_notes。
+输入：Report 结构化结果。
 
-### 边界
+输出：ReportExplanation。
 
-解释必须基于 structured_report，不添加无依据内容。
+### 4.4 边界检查 Agent
 
-## 6. 边界检查 Agent
+职责：
 
-### 职责
+- 检查输出是否过度绝对；
+- 检查是否缺少数据日期；
+- 检查是否脱离结构化依据；
+- 检查是否需要补充说明。
 
-检查报告解释是否符合产品边界。
+输入：Report + ReportExplanation。
 
-### 输入
+输出：checked_report、check_notes。
 
-- report_explanation；
-- product_principles；
-- forbidden_patterns。
+### 4.5 复盘 Agent
 
-### 输出
+职责：
 
-- passed；
-- issues；
-- revised_text。
+- 对比本次报告和上次报告；
+- 找出变化；
+- 延续上次关注事项；
+- 生成周度复盘摘要。
 
-### 边界
+输入：current_report、previous_report、feedback。
 
-只做检查和修订，不改变结构化事实。
+输出：weekly_review_report。
 
-## 7. 复盘 Agent
+### 4.6 反馈归类 Agent
 
-### 职责
+职责：
 
-比较历史报告，生成复盘摘要。
+- 将用户反馈归类；
+- 标记解释问题、页面问题、数据问题或新需求；
+- 输出给产品迭代。
 
-### 输入
+输入：feedback。
 
-- current_report；
-- previous_report；
-- user_feedback；
-- data_date。
+输出：feedback_category、priority、notes。
 
-### 输出
-
-- changes；
-- continued_watch_items；
-- resolved_items；
-- next_review_focus。
-
-### 边界
-
-只做变化说明和复盘线索，不替用户做最终判断。
-
-## 8. 编排流程
+## 5. 编排流程
 
 ```text
-用户输入持仓
+PositionInput
   ↓
 数据整理 Agent
   ↓
@@ -147,34 +130,41 @@ Agent 不是聊天机器人，而是产品工作流中的任务单元。
   ↓
 边界检查 Agent
   ↓
-保存报告
+Report 保存
+  ↓
+反馈归类 Agent
   ↓
 复盘 Agent
 ```
 
-## 9. 后端实现建议
+## 6. 后端实现建议
 
-建议在后端创建 agent_orchestrator 服务。
+建议在后端建立 `agent_orchestrator` 服务。
 
-核心方法：
+职责：
 
-- build_enriched_positions；
-- generate_structured_report；
-- generate_explanation；
-- run_boundary_check；
-- save_report；
-- generate_review_report。
+- 统一调用 Agent；
+- 维护上下文；
+- 记录 prompt_version；
+- 记录 model_version；
+- 处理失败和降级。
 
-## 10. MVP 实现
+## 7. 日志要求
 
-MVP 可以先用规则函数模拟 Agent。
+每次 Agent 调用记录：
 
-接口和数据结构先稳定，后续再替换为真实模型调用。
+- agent_name；
+- input_hash；
+- output_status；
+- prompt_version；
+- model_version；
+- latency_ms；
+- error_message。
 
-## 11. 验收标准
+## 8. 验收标准
 
-- 每个 Agent 有明确输入输出；
-- 报告生成链路可跑通；
-- 解释基于结构化结果；
-- 边界检查可执行；
-- 历史报告可进入复盘链路。
+- 每个 Agent 有独立输入输出；
+- 编排流程可跑通；
+- 失败时可以降级；
+- 报告结果可保存；
+- Prompt 版本和模型版本可追踪。
