@@ -8,6 +8,12 @@ const riskOptions = [
   { value: "aggressive", label: "积极" },
 ];
 
+const explanationOptions = [
+  { value: "structured", label: "结构化" },
+  { value: "plain", label: "更白话" },
+  { value: "review", label: "偏复盘" },
+];
+
 export function SettingsForm({
   value,
   onChange,
@@ -70,6 +76,20 @@ export function SettingsForm({
             <option value="beginner">刚开始</option>
             <option value="intermediate">有一定经验</option>
             <option value="advanced">经验较多</option>
+          </select>
+        </label>
+        <label className="grid gap-2">
+          <span className="small-label">解释偏好</span>
+          <select
+            value={value.explanation_style || "structured"}
+            onChange={(event) => patch({ explanation_style: event.target.value })}
+            className="h-11 rounded-md border border-line px-3 text-sm"
+          >
+            {explanationOptions.map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.label}
+              </option>
+            ))}
           </select>
         </label>
         <label className="grid gap-2 md:col-span-2">

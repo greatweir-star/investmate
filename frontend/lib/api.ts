@@ -3,12 +3,14 @@ import type {
   AppSettings,
   AssetAnalysis,
   AssetSuggestion,
+  FeedbackPayload,
+  FeedbackResponse,
   HistoryDetail,
   HistoryRecord,
   InvestmentDNA,
   MarketStatus,
-  PortfolioAnalysis,
   Position,
+  ReportDetail,
   SyncStatus,
 } from "@/lib/types";
 
@@ -46,10 +48,26 @@ export const api = {
         body: JSON.stringify({ user_id: "demo_user", positions }),
       },
     ),
-  analyzePortfolio: () =>
-    request<PortfolioAnalysis>("/api/analysis/portfolio", {
+  createPortfolioHealthReport: (positions: Position[]) =>
+    request<ReportDetail>("/api/reports/portfolio-health", {
+      method: "POST",
+      body: JSON.stringify({ user_id: "demo_user", positions }),
+    }),
+  analyzePortfolio: (positions?: Position[]) =>
+    request<ReportDetail>(positions ? "/api/reports/portfolio-health" : "/api/analysis/portfolio", {
+      method: "POST",
+      body: JSON.stringify(positions ? { user_id: "demo_user", positions } : { user_id: "demo_user" }),
+    }),
+  getReport: (reportId: string) => request<ReportDetail>(`/api/reports/${reportId}`),
+  generateWeeklyReview: (reportId: string) =>
+    request<ReportDetail>(`/api/reports/${reportId}/weekly-review`, {
       method: "POST",
       body: JSON.stringify({ user_id: "demo_user" }),
+    }),
+  createFeedback: (payload: FeedbackPayload) =>
+    request<FeedbackResponse>("/api/feedback", {
+      method: "POST",
+      body: JSON.stringify({ ...payload, user_id: "demo_user" }),
     }),
   getHistory: (params?: { limit?: number; analysisType?: string }) => {
     const query = new URLSearchParams({

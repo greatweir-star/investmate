@@ -15,6 +15,7 @@ const fallbackDna: InvestmentDNA = {
   asset_preferences: ["a_share", "etf"],
   trading_frequency: "medium",
   experience_level: "intermediate",
+  explanation_style: "structured",
 };
 
 export default function SettingsPage() {

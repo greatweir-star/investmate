@@ -19,6 +19,7 @@ class InvestmentDNA(BaseModel):
     asset_preferences: list[str]
     trading_frequency: Optional[str] = None
     experience_level: str
+    explanation_style: Optional[str] = "structured"
 
 
 class SettingsRequest(BaseModel):

@@ -6,8 +6,8 @@ from pydantic import BaseModel, Field
 from fastapi import APIRouter, HTTPException
 
 from app.core.response import now_iso, success_response
-from app.services.analysis_service import analyze_portfolio
-from app.services.mock_store import DEMO_USER_ID, save_positions
+from app.services.agent_orchestrator import generate_portfolio_health_report
+from app.services.mock_store import DEMO_USER_ID, get_positions, save_positions
 
 router = APIRouter()
 
@@ -47,7 +47,8 @@ def save_portfolio(payload: SavePortfolioRequest):
 
 @router.post("/api/analysis/portfolio")
 def analysis_portfolio(payload: PortfolioAnalysisRequest):
-    result = analyze_portfolio(payload.user_id)
-    if not result:
+    positions = get_positions(payload.user_id)
+    if not positions:
         raise HTTPException(status_code=400, detail="请先保存至少一条持仓，再生成持仓体检报告。")
+    result = generate_portfolio_health_report(payload.user_id, positions)
     return success_response(result, result.get("data_date"))

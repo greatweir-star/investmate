@@ -8,10 +8,10 @@ from app.services.ai_service import explain_asset, explain_portfolio
 from app.services.mock_store import (
     ASSET_BY_CODE,
     DEMO_USER_ID,
-    add_analysis_record,
     get_asset,
     get_positions,
     make_id,
+    save_report,
     settings_state,
 )
 
@@ -61,14 +61,39 @@ def analyze_asset(asset_code: str, question: Optional[str], user_id: str = DEMO_
         "data_date": today_text(),
     }
     result["explanation"] = explain_asset(result)
-    add_analysis_record(
-        user_id=user_id,
-        analysis_type="asset_review",
-        target_code=asset["asset_code"],
-        target_name=asset["asset_name"],
-        input_payload={"asset_code": asset["asset_code"], "question": question, "user_id": user_id},
-        structured_result=result,
-        natural_language=result["explanation"],
+    save_report(
+        {
+            "report_id": result["analysis_id"],
+            "user_id": user_id,
+            "report_type": "asset_review",
+            "title": asset["asset_name"],
+            "summary": result["summary"],
+            "health_score": scores.get("fit_to_user", 60),
+            "fit_score": scores.get("fit_to_user", 60),
+            "risk_level": risk_level,
+            "confidence": result["confidence"],
+            "data_date": result["data_date"],
+            "generated_at": today_text(),
+            "created_at": today_text(),
+            "position_count": 1,
+            "position_input": [{"asset_code": asset["asset_code"]}],
+            "enriched_positions": [],
+            "score_items": [],
+            "exposure_items": [],
+            "watch_items": [],
+            "duplicate_exposure": [],
+            "explanation": {
+                "short_summary": result["summary"],
+                "detailed_explanation": result["explanation"],
+                "assumptions": [],
+                "data_notes": ["标的分析暂未接入完整报告对象，仅用于兼容历史记录。"],
+            },
+            "evidence": {"score_calculation": [], "exposure_calculation": [], "watch_item_evidence": []},
+            "prompt_version": "asset_prompt_v0.0.01",
+            "model_version": "mock-asset-v0.0.01",
+            "quality_status": {"status": "review", "quality_score": 3, "missing_fields": [], "notes": ["兼容模式记录。"]},
+            "boundary_check_result": {"status": "passed", "notes": ["兼容模式记录。"], "blocked_phrases": [], "review_required": False},
+        }
     )
     return result
 
@@ -117,15 +142,6 @@ def analyze_portfolio(user_id: str = DEMO_USER_ID):
         "data_date": today_text(),
     }
     result["explanation"] = explain_portfolio(result)
-    add_analysis_record(
-        user_id=user_id,
-        analysis_type="portfolio_review",
-        target_code=None,
-        target_name="我的持仓组合",
-        input_payload={"user_id": user_id, "positions": positions},
-        structured_result=result,
-        natural_language=result["explanation"],
-    )
     return result
 
 

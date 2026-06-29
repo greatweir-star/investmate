@@ -3,7 +3,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api import admin, assets, history, market, portfolio, settings
+from app.api import admin, assets, feedback, history, market, portfolio, reports, settings
 from app.core.config import get_settings
 from app.core.response import error_response, success_response
 
@@ -50,6 +50,8 @@ def health():
 app.include_router(market.router)
 app.include_router(assets.router)
 app.include_router(portfolio.router)
+app.include_router(reports.router)
 app.include_router(history.router)
+app.include_router(feedback.router)
 app.include_router(settings.router)
 app.include_router(admin.router)

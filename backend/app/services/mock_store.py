@@ -8,8 +8,8 @@ from app.core.response import now_iso, today_text
 
 
 DEMO_USER_ID = "demo_user"
-PROMPT_VERSION = "prompt_mock_v0.1"
-MODEL_VERSION = "mock-rule-engine-v0.1"
+REPORT_PROMPT_VERSION = "portfolio_health_prompt_v0.0.01"
+REPORT_MODEL_VERSION = "mock-agent-stack_v0.0.01"
 
 ASSETS = [
     {
@@ -72,6 +72,7 @@ settings_state = {
         "asset_preferences": ["a_share", "etf"],
         "trading_frequency": "medium",
         "experience_level": "intermediate",
+        "explanation_style": "structured",
     }
 }
 
@@ -101,7 +102,8 @@ portfolio_state = {
     ]
 }
 
-analysis_records = []
+report_records: list[dict] = []
+feedback_records: list[dict] = []
 
 
 def make_id(prefix: str) -> str:
@@ -111,8 +113,7 @@ def make_id(prefix: str) -> str:
 def get_asset(asset_code: Optional[str]):
     if not asset_code:
         return None
-    upper_code = asset_code.upper()
-    return ASSET_BY_CODE.get(upper_code)
+    return ASSET_BY_CODE.get(asset_code.upper())
 
 
 def search_assets(keyword: str):
@@ -153,47 +154,107 @@ def get_positions(user_id: str):
     return deepcopy(portfolio_state.get(user_id, []))
 
 
-def add_analysis_record(
-    user_id: str,
-    analysis_type: str,
-    target_code: Optional[str],
-    target_name: str,
-    input_payload: dict,
-    structured_result: dict,
-    natural_language: str,
-):
-    record = {
-        "analysis_id": structured_result["analysis_id"],
-        "user_id": user_id,
-        "analysis_type": analysis_type,
-        "target_code": target_code,
-        "target_name": target_name,
-        "input_payload": deepcopy(input_payload),
-        "structured_result": deepcopy(structured_result),
-        "natural_language": natural_language,
-        "summary": structured_result.get("summary", ""),
-        "confidence": structured_result.get("confidence", 0),
-        "risk_level": structured_result.get("risk_level", "unknown"),
-        "data_date": structured_result.get("data_date", today_text()),
-        "prompt_version": PROMPT_VERSION,
-        "model_version": MODEL_VERSION,
-        "created_at": now_iso(),
-    }
-    analysis_records.insert(0, record)
-    return deepcopy(record)
+def save_report(report: dict):
+    report_records.insert(0, deepcopy(report))
+    return deepcopy(report)
 
 
-def list_history(user_id: str, limit: int = 20, analysis_type: Optional[str] = None):
+def get_report(report_id: str):
+    for report in report_records:
+        if report["report_id"] == report_id:
+            return deepcopy(report)
+    return None
+
+
+def list_reports(user_id: str, limit: int = 20, report_type: Optional[str] = None):
     rows = [
         row
-        for row in analysis_records
-        if row["user_id"] == user_id and (not analysis_type or row["analysis_type"] == analysis_type)
+        for row in report_records
+        if row["user_id"] == user_id and (not report_type or row["report_type"] == report_type)
     ]
     return deepcopy(rows[:limit])
 
 
-def get_history_detail(analysis_id: str):
-    for record in analysis_records:
-        if record["analysis_id"] == analysis_id:
-            return deepcopy(record)
+def get_latest_report(user_id: str, report_type: Optional[str] = None, exclude_report_id: Optional[str] = None):
+    for report in report_records:
+        if report["user_id"] != user_id:
+            continue
+        if report_type and report["report_type"] != report_type:
+            continue
+        if exclude_report_id and report["report_id"] == exclude_report_id:
+            continue
+        return deepcopy(report)
     return None
+
+
+def add_feedback(feedback: dict):
+    feedback_records.insert(0, deepcopy(feedback))
+    return deepcopy(feedback)
+
+
+def list_feedback_for_report(report_id: str):
+    rows = [row for row in feedback_records if row["report_id"] == report_id]
+    return deepcopy(rows)
+
+
+def list_feedback_for_user(user_id: str, limit: int = 20):
+    rows = [row for row in feedback_records if row["user_id"] == user_id]
+    return deepcopy(rows[:limit])
+
+
+def get_watch_item_history(user_id: str, limit: int = 12):
+    history = []
+    for report in report_records:
+        if report["user_id"] != user_id:
+            continue
+        for item in report.get("watch_items", []):
+            history.append(
+                {
+                    "report_id": report["report_id"],
+                    "report_type": report["report_type"],
+                    "title": item.get("title", ""),
+                    "level": item.get("level", "medium"),
+                    "created_at": report["created_at"],
+                }
+            )
+    return deepcopy(history[:limit])
+
+
+def list_history(user_id: str, limit: int = 20, analysis_type: Optional[str] = None):
+    rows = list_reports(user_id=user_id, limit=limit, report_type=analysis_type)
+    return [
+        {
+            "analysis_id": row["report_id"],
+            "analysis_type": row["report_type"],
+            "target_name": row["title"],
+            "summary": row["summary"],
+            "risk_level": row["risk_level"],
+            "confidence": row["confidence"],
+            "data_date": row["data_date"],
+            "created_at": row["created_at"],
+            "quality_status": row["quality_status"]["status"],
+        }
+        for row in rows
+    ]
+
+
+def get_history_detail(analysis_id: str):
+    report = get_report(analysis_id)
+    if not report:
+        return None
+    return {
+        "analysis_id": report["report_id"],
+        "analysis_type": report["report_type"],
+        "target_name": report["title"],
+        "input_payload": {
+            "positions": report.get("position_input", []),
+            "user_id": report["user_id"],
+        },
+        "structured_result": report,
+        "natural_language": report.get("explanation", {}).get("detailed_explanation", ""),
+        "data_date": report["data_date"],
+        "prompt_version": report["prompt_version"],
+        "model_version": report["model_version"],
+        "created_at": report["created_at"],
+    }
+
